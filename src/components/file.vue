@@ -49,7 +49,7 @@
 </template>
 
 <script>
-  import Uploader from 'simple-uploader.js'
+  import Uploader from 'simple-upload1.js'
   import events from '../common/file-events'
   import { secondsToStr } from '../common/utils'
 

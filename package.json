@@ -1,11 +1,11 @@
 {
-  "name": "vue-simple-uploading",
-  "version": "0.7.1",
+  "name": "vue-simple-upload1",
+  "version": "0.7.3",
   "description": "A Vue.js upload component powered by simple-uploader.js",
   "main": "dist/vue-uploader.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cqkd6381/vue-uploader.git"
+    "url": "https://github.com/cqkd6381/vue-simple-upload1.git"
   },
   "bugs": "https://github.com/cqkd6381/vue-uploader/issues",
   "homepage": "https://github.com/cqkd6381/vue-uploader",
@@ -18,7 +18,7 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs"
   },
   "dependencies": {
-    "simple-upload.js": "^0.5.1"
+    "simple-upload1.js": "^0.6.0"
   },
   "peerDependencies": {
     "vue": ">=2.2"
