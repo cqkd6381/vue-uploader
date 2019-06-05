@@ -49,7 +49,7 @@
 </template>
 
 <script>
-  import Uploader from 'simple-upload1.js'
+  import Uploader from 'cqkd-upload.js'
   import events from '../common/file-events'
   import { secondsToStr } from '../common/utils'
 
