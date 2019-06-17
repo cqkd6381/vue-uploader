@@ -1,6 +1,6 @@
 {
   "name": "vue-cqkd-upload",
-  "version": "0.7.5",
+  "version": "0.7.7",
   "description": "A Vue.js upload component powered by simple-uploader.js",
   "main": "dist/vue-uploader.js",
   "repository": {
