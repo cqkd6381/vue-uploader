@@ -119,9 +119,9 @@
       },
       progressStyle2 () {
         const progress = Math.floor(this.progress * 100)
-        const style = progress+'%'
+        const style = progress + '%'
         return {
-          width: style;
+          width: style
         }
       },
       formatedAverageSpeed () {

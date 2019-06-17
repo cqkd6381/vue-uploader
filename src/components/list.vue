@@ -57,7 +57,7 @@
   .tasks-header .operation i{width: 30px;height: 30px;display:block;text-align: center;line-height: 30px;font-size: 14px;font-weight: bold; }
   .tasks-header .operation a{width: 30px;height: 30px;display: block; margin-left: 10px;float: left;}
   .tasks-header .operation a:hover{background: #eee;}
-  .tasks-header .operation .act i{-webkit-transform: rotate(180deg);transform: rotate(180deg);}}
+  .tasks-header .operation .act i{-webkit-transform: rotate(180deg);transform: rotate(180deg);}
   .tasks-body{width: 100%;background: #fff;}
   .tasks-item{width: 100%;height: 70px;padding:20px 20px;border-bottom: #eee solid 1px;position: relative;background: #fff;}
 </style>
