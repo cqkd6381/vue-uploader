@@ -1,5 +1,5 @@
 <template>
-  <div class="uploader">
+  <div class="tasks">
     <slot :files="files" :file-list="fileList" :started="started">
       <uploader-unsupport></uploader-unsupport>
       <uploader-drop>
@@ -21,12 +21,10 @@
   import UploaderList from './list.vue'
   import UploaderFiles from './files.vue'
   import UploaderFile from './file.vue'
-
   const COMPONENT_NAME = 'uploader'
   const FILE_ADDED_EVENT = 'fileAdded'
   const FILES_ADDED_EVENT = 'filesAdded'
   const UPLOAD_START_EVENT = 'uploadStart'
-
   export default {
     name: COMPONENT_NAME,
     provide () {
@@ -67,9 +65,11 @@
     },
     methods: {
       uploadStart () {
+        this.showTask = true
         this.started = true
       },
       fileAdded (file) {
+        this.numbers += 1
         this.$emit(kebabCase(FILE_ADDED_EVENT), file)
         if (file.ignored) {
           // is ignored, filter it
@@ -82,6 +82,9 @@
           // is ignored, filter it
           return false
         }
+      },
+      fileSuccess (file) {
+        this.numbers -= 1
       },
       fileRemoved (file) {
         this.files = this.uploader.files
@@ -144,7 +147,32 @@
 </script>
 
 <style>
-  .uploader {
-    position: relative;
+  .close {
+    opacity: .5;
   }
+  .close:hover, .close:focus {
+    opacity: 1;
+  }
+  a {
+    color: #383838;
+    text-decoration: none;
+  }
+  a:hover, a:focus {
+    text-decoration: none;
+    color: #006ADF;
+    outline: none;
+  }
+  @media (min-width: 768px) {
+    .tasks{width: 500px;position: fixed;right: 20px;bottom: 20px;box-shadow: rgba(0,0,0,.1) 0 2px 10px;}
+  }
+  @media (max-width: 768px) {
+    .tasks{width:calc(100% - 20px);position: fixed;left: 10px; right: 10px;bottom: 10px;box-shadow: 0 3px 9px rgba(0,0,0,.2);}
+  }
+  .tasks-header{width: 100%;height: 50px; padding:10px 20px;background: #fff;background: #f1f1f1;line-height: 30px;}
+  .tasks-header .title{font-size: 18px;float: left;}
+  .tasks-header .operation{float: right;}
+  .tasks-header .operation i{width: 30px;height: 30px;display:block;text-align: center;line-height: 30px;font-size: 14px;font-weight: bold; }
+  .tasks-header .operation a{width: 30px;height: 30px;display: block; margin-left: 10px;float: left;}
+  .tasks-header .operation a:hover{background: #eee;}
+  .tasks-header .operation .act i{-webkit-transform: rotate(180deg);transform: rotate(180deg);}
 </style>

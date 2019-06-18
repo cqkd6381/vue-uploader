@@ -1,5 +1,5 @@
 <template>
-  <div class="uploader-file" :status="status">
+  <div class="tasks-item" :status="status">
     <slot
       :file="file"
       :list="list"
@@ -24,26 +24,32 @@
       :extension="extension"
       :file-category="fileCategory"
       >
-      <div class="uploader-file-progress" :class="progressingClass" :style="progressStyle"></div>
-      <div class="uploader-file-info">
-        <div class="uploader-file-name"><i class="uploader-file-icon" :icon="fileCategory"></i>{{file.name}}</div>
-        <div class="uploader-file-size">{{formatedSize}}</div>
-        <div class="uploader-file-meta"></div>
-        <div class="uploader-file-status">
+      <div class="item-icon">
+        <svg aria-hidden="true" class="icon">
+          <use :xlink:href="'#icon-'+fileCategory2"></use>
+        </svg>
+      </div>
+      <div class="item-info">
+        <h6>
+          {{file.name}}
+        </h6>
+        <p>
+          总计{{formatedSize}}
           <span v-show="status !== 'uploading'">{{statusText}}</span>
           <span v-show="status === 'uploading'">
             <span>{{progressStyle.progress}}</span>
-            <em>{{formatedAverageSpeed}}</em>
-            <i>{{formatedTimeRemaining}}</i>
+            <span>{{formatedAverageSpeed}}</span>
+            <span>{{formatedTimeRemaining}}</span>
           </span>
-        </div>
-        <div class="uploader-file-actions">
-          <span class="uploader-file-pause" @click="pause"></span>
-          <span class="uploader-file-resume" @click="resume">️</span>
-          <span class="uploader-file-retry" @click="retry"></span>
-          <span class="uploader-file-remove" @click="remove"></span>
-        </div>
+        </p>
       </div>
+      <div class="item-status" v-show="status === 'success'">
+        <i class="iconfont icon-status-succ"></i>
+      </div>
+      <div class="item-status" v-show="status === 'error'">
+        <i class="iconfont icon-status-fail"></i>
+      </div>
+      <div class="progress" :style="progressStyle2"></div>
     </slot>
   </div>
 </template>
@@ -54,7 +60,13 @@
   import { secondsToStr } from '../common/utils'
 
   const COMPONENT_NAME = 'uploader-file'
-
+  const fileExts = [
+    {ext: 'pdf', icon: 'pdf'}, {ext: 'txt', icon: 'txt'}, {ext: 'jar', icon: 'jar'}, {ext: 'umd', icon: 'umd'}, {ext: 'xls', icon: 'xls'}, {ext: 'doc', icon: 'doc'}, {ext: 'ppt', icon: 'ppt'}, {ext: 'docx', icon: 'docx'}, {ext: 'pptx', icon: 'pptx'}, {ext: 'xlsx', icon: 'xlsx'}, {ext: 'wps', icon: 'wps'}, {ext: 'html', icon: 'html'}, {ext: 'hlp', icon: 'hlp'},
+    {ext: 'bmp', icon: 'bmp'}, {ext: 'jpg', icon: 'jpg'}, {ext: 'jpeg', icon: 'jpeg'}, {ext: 'png', icon: 'png'}, {ext: 'tif', icon: 'tif'}, {ext: 'gif', icon: 'gif'}, {ext: 'pcx', icon: 'pcx'}, {ext: 'tga', icon: 'tga'}, {ext: 'exif', icon: 'exif'}, {ext: 'fpx', icon: 'fpx'}, {ext: 'svg', icon: 'svg'}, {ext: 'psd', icon: 'psd'}, {ext: 'cdr', icon: 'cdr'}, {ext: 'pcd', icon: 'pcd'}, {ext: 'dxf', icon: 'dxf'}, {ext: 'ufo', icon: 'ufo'}, {ext: 'eps', icon: 'eps'}, {ext: 'ai', icon: 'ai'}, {ext: 'raw', icon: 'raw'}, {ext: 'webp', icon: 'webp'},
+    {ext: 'mp3', icon: 'mp'}, {ext: 'wave', icon: 'wave'}, {ext: 'ape', icon: 'ape'}, {ext: 'flac', icon: 'flac'}, {ext: 'acc', icon: 'acc'}, {ext: 'wma', icon: 'wma'}, {ext: 'ra', icon: 'ra'}, {ext: 'mid', icon: 'mid'}, {ext: 'amr', icon: 'amr'},
+    {ext: 'mpeg', icon: 'mpeg'}, {ext: 'avi', icon: 'avi'}, {ext: 'mov', icon: 'mov'}, {ext: 'asf', icon: 'asf'}, {ext: 'wmv', icon: 'wmv'}, {ext: '3gp', icon: 'gp'}, {ext: 'rmvb', icon: 'rmvb'}, {ext: 'flv', icon: 'flv'}, {ext: 'mkv', icon: 'mkv'}, {ext: 'dat', icon: 'dat'}, {ext: 'mp4', icon: 'mp1'}, {ext: 'rm', icon: 'rm'}, {ext: 'swf', icon: 'swf'},
+    {ext: 'zip', icon: 'zip'}, {ext: 'rar', icon: 'rar'}, {ext: 'ios', icon: 'ios'}, {ext: 'arj', icon: 'arj'}, {ext: 'int', icon: 'int'}, {ext: 'sys', icon: 'sys'}, {ext: 'dll', icon: 'dll'}, {ext: 'adt', icon: 'adt'}, {ext: 'exe', icon: 'exe'}, {ext: 'com', icon: 'com'}, {ext: 'c', icon: 'c'}, {ext: 'asm', icon: 'asm'}, {ext: 'for', icon: 'for'}, {ext: 'lib', icon: 'lib'}, {ext: 'lst', icon: 'lst'}, {ext: 'msg', icon: 'msg'}, {ext: 'obj', icon: 'obj'}, {ext: 'pas', icon: 'pas'}, {ext: 'wki', icon: 'wki'}, {ext: 'bas', icon: 'bas'}, {ext: 'bak', icon: 'bak'}, {ext: 'tmp', icon: 'tmp'}, {ext: 'bat', icon: 'bat'}, {ext: 'cmd', icon: 'cmd'}
+  ]
   export default {
     name: COMPONENT_NAME,
     props: {
@@ -108,6 +120,18 @@
         })
         return type
       },
+      fileCategory2 () {
+        let type = this.file.isFolder ? 'folder' : 'unknown'
+        if (this.file.isFolder) {
+          return 'folder'
+        }
+        type = fileExts.find(item => item.ext === this.extension)
+        if (type) {
+          return type.icon
+        } else {
+          return 'file'
+        }
+      },
       progressStyle () {
         const progress = Math.floor(this.progress * 100)
         const style = `translateX(${Math.floor(progress - 100)}%)`
@@ -117,6 +141,13 @@
           mozTransform: style,
           msTransform: style,
           transform: style
+        }
+      },
+      progressStyle2 () {
+        const progress = Math.floor(this.progress * 100)
+        const style = progress + '%'
+        return {
+          width: style
         }
       },
       formatedAverageSpeed () {
@@ -305,137 +336,19 @@
 </script>
 
 <style>
-  .uploader-file {
-    position: relative;
-    height: 49px;
-    line-height: 49px;
-    overflow: hidden;
-    border-bottom: 1px solid #cdcdcd;
-  }
-  .uploader-file[status="waiting"] .uploader-file-pause,
-  .uploader-file[status="uploading"] .uploader-file-pause {
-    display: block;
-  }
-  .uploader-file[status="paused"] .uploader-file-resume {
-    display: block;
-  }
-  .uploader-file[status="error"] .uploader-file-retry {
-    display: block;
-  }
-  .uploader-file[status="success"] .uploader-file-remove {
-    display: none;
-  }
-  .uploader-file[status="error"] .uploader-file-progress {
-    background: #ffe0e0;
-  }
-  .uploader-file-progress {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: #e2eeff;
-    transform: translateX(-100%);
-  }
-  .uploader-file-progressing {
-    transition: all .4s linear;
-  }
-  .uploader-file-info {
-    position: relative;
-    z-index: 1;
-    height: 100%;
-    overflow: hidden;
-  }
-  .uploader-file-info:hover {
-    background-color: rgba(240, 240, 240, 0.2);
-  }
-  .uploader-file-info i,
-  .uploader-file-info em {
-    font-style: normal;
-  }
-  .uploader-file-name,
-  .uploader-file-size,
-  .uploader-file-meta,
-  .uploader-file-status,
-  .uploader-file-actions {
-    float: left;
-    position: relative;
-    height: 100%;
-  }
-  .uploader-file-name {
-    width: 45%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    text-indent: 14px;
-  }
-  .uploader-file-icon {
-    width: 24px;
-    height: 24px;
-    display: inline-block;
-    vertical-align: top;
-    margin-top: 13px;
-    margin-right: 8px;
-  }
-  .uploader-file-icon::before {
-    content: "📃";
-    display: block;
-    height: 100%;
-    font-size: 24px;
-    line-height: 1;
-    text-indent: 0;
-  }
-  .uploader-file-icon[icon="folder"]::before {
-    content: "📂";
-  }
-  .uploader-file-icon[icon="image"]::before {
-    content: "📊";
-  }
-  .uploader-file-icon[icon="video"]::before {
-    content: "📹";
-  }
-  .uploader-file-icon[icon="audio"]::before {
-    content: "🎵";
-  }
-  .uploader-file-icon[icon="document"]::before {
-    content: "📋";
-  }
-  .uploader-file-size {
-    width: 13%;
-    text-indent: 10px;
-  }
-  .uploader-file-meta {
-    width: 8%;
-  }
-  .uploader-file-status {
-    width: 24%;
-    text-indent: 20px;
-  }
-  .uploader-file-actions {
-    width: 10%;
-  }
-  .uploader-file-actions > span {
-    display: none;
-    float: left;
-    width: 16px;
-    height: 16px;
-    margin-top: 16px;
-    margin-right: 10px;
-    cursor: pointer;
-    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAABkCAYAAAD0ZHJ6AAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAAJcEhZcwAACxMAAAsTAQCanBgAAARkSURBVGje7ZnfS1NRHMAH4ptPkvQSuAdBkCxD8FUQJMEULUgzy1KyyPVQ4JMiiP4Bvg6EwUQQfMmwhwRDshwaKUjDVCgoSdDNHkzTJZ6+Z37Purve8+PeTb2TM/ggu+ew89l33x8H9BBCPG7GowXTJej3+wnDvEm0JuLC04+EYWftVAUv+fiCvDUdQR1BHUEdQR3BTIygvixoQS14XgTtthLVdpNWwXRLqvQ724LplFRtyrYF0yVpFLQrKRVMh6RZ0I6kkmCqklaCqpKZH0FX56Crq9jVfdDVk0RfFrSgFsxkQVmLcdKCVrKySCrryhPEyYShhzOcrFtG0EoilfHHk1CRU5rF6ZjNZhlVOW6RnMSVyyilKies4pO41diVy8wIujoHXV3FGdMHXTtJKLFYTLhZtq4vC1rwXApCZTIqgR6g1PBMCO9DL3bMMSqBHqDU8EyISDAHiGKvWwcCQG2KgjlAFCDAOhAAap0K5gKLphk8mqJgLrCIgoxRJ4J5wKpJ7gAoMkn5EBXBPGDVJHcAFJmkfIhQcAql1oBpTvTol9gG9pm4RHAKpdaAaU706JfYBvaZuJVgPQrt4sFlnOh5MC/p3lmJYD0K7eLBZZzoeTAv6d5ZnuAYHjpgEOnk5F0ufhG6v1ggOIaHDhhEOjl5l4tfhO4vthLcwAMrFNvLJO5vEwhu4IEViu1lEve3WQmyoihQFBzG/V0CQVYUBYqCw7i/SxTBcpsRbFeIYLnNCLZbCY5b5KAnxRwct8hBj9McZFVMW0ihRNBuFdMWUigRlFaxuQ9WWYjRMTiIe5z0wSoLMToGB3GPsA9aTZIJoB+nRgBnM1tzOkkmgH6cGgGczWzNpzqLx3n/aULJJgezeNw07oxQySbVywKjBOgFRnDs+VEsx8FlgVEC9AIjOPb8KJYjvSzoG7UW1IJaUAtqQS14toLNM5fN5APdwBJA8G83Pk/aK/rgzVvXzeQD3cASQPBvNz5P2ssTzAaGUIrHEO6zI5gNDKEUjyHcxxWkh4Ylcowwk1QQpIeGJXKMMJO0EgwqyjGCioJBJvDrxRMSuVOTJEXfbz1/bHwWtBL0yoQehK6RucgE+bGzanzulQh6E3IgQV+xpc8kcrfuSO7eTfJ3ZYmQw0Oy9azVKOk1C/bJ5D5F38YPeLfx0rjWJxHsS0SqsSYuxySjj5qO5Oj7xQWy2VBtFOwzCy6ryH3YfE3uh64Y1xckgstJPydEjkkeHv07Iy4Xaao15+KCWTBx6M/db+T9xivSErqaJDdzXI6yLRE8Vgg0coex/SPJvT0SbWu0KpZtbgSpCH3NRt7I5OxHkObc6heU+/M/J5vrpBFM5GBLqCQux14COXs5CNXK5OjPGm1tSMrJSOMNYQ4mVTGV/L6zTL7+DovkbFUxbSW0Wo05l8hJWsU+cRWfSh+Mt5Lb1ck/J1TvVsdDaR/MiEni+llsdZuZp62EViu+96bpNjNPWwmtVnzvFd5m9IVVC54x/wA7gNvqFG9vXQAAAABJRU5ErkJggg==") no-repeat 0 0;
-  }
-  .uploader-file-actions > span:hover {
-    background-position-x: -21px;
-  }
-  .uploader-file-actions .uploader-file-pause {
-    background-position-y: 0;
-  }
-  .uploader-file-actions .uploader-file-resume {
-    background-position-y: -17px;
-  }
-  .uploader-file-actions .uploader-file-retry {
-    background-position-y: -53px;
-  }
-  .uploader-file-actions .uploader-file-remove {
-    display: block;
-    background-position-y: -34px;
+  .tasks-item{width: 100%;height: 70px;padding:20px 20px;border-bottom: #eee solid 1px;position: relative;background: #fff;}
+  .tasks-item .progress{height:2px;position: absolute;bottom:-20px;background-color:rgba(0,106,223,.2);box-shadow: none; left: 0;border-radius: 0;}
+  .tasks-item:last-child{border-bottom: none;}
+  .tasks-item .item-icon{width: 30px;height: 30px;position: absolute;left: 20px;}
+  .tasks-item .item-icon .icon{width: 30px;height: 30px;}
+  .tasks-item .item-info{padding-left: 40px;font-size: 12px;}
+  .tasks-item .item-info p{color: #999; margin-top: 5px;}
+  .tasks-item .item-status{width: 30px;height: 30px;text-align: center;line-height: 30px;position: absolute;right: 20px;top: 20px;}
+  .tasks-item .item-status .icon-status-succ{color: #00c15c;}
+  .tasks-item .item-status .icon-status-fail{color: #fc3f3f;}
+  p, h6 {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
   }
 </style>

@@ -1,11 +1,9 @@
 <template>
-  <div class="uploader-list">
+  <div class="tasks-body">
     <slot :file-list="fileList">
-      <ul>
-        <li v-for="file in fileList" :key="file.id">
-          <uploader-file :file="file" :list="true"></uploader-file>
-        </li>
-      </ul>
+      <div v-for="file in fileList" :key="file.id">
+        <uploader-file :file="file" :list="true"></uploader-file>
+      </div>
     </slot>
   </div>
 </template>
@@ -31,12 +29,5 @@
 </script>
 
 <style>
-  .uploader-list {
-    position: relative;
-  }
-  .uploader-list > ul {
-    list-style: none;
-    margin: 0;
-    padding: 0
-  }
+  .tasks-body{width: 100%;background: #fff;max-height: 300px;overflow-y: scroll;overflow-x: hidden;}
 </style>
