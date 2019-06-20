@@ -35,6 +35,7 @@
         </h6>
         <p>
           总计{{formatedSize}}
+          <span>{{file.father}}</span>
           <span v-show="status !== 'uploading'">{{statusText}}</span>
           <span v-show="status === 'uploading'">
             <span>{{progressStyle.progress}}</span>
