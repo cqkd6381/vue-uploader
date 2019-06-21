@@ -30,25 +30,35 @@
         </svg>
       </div>
       <div class="item-info">
-        <h6>
+        <h6 :title="file.name">
           {{file.name}}
         </h6>
-        <p>
-          总计{{formatedSize}}
-          <span>{{file.father}}</span>
-          <span v-show="status !== 'uploading'">{{statusText}}</span>
-          <span v-show="status === 'uploading'">
-            <span>{{progressStyle.progress}}</span>
-            <span>{{formatedAverageSpeed}}</span>
-            <span>{{formatedTimeRemaining}}</span>
-          </span>
+        <p :title="file.father">
+          {{file.father}}
         </p>
       </div>
-      <div class="item-status" v-show="status === 'success'">
-        <i class="iconfont icon-status-succ"></i>
+      <div class="item-bit">
+        {{formatedSize}}
       </div>
-      <div class="item-status" v-show="status === 'error'">
-        <i class="iconfont icon-status-fail"></i>
+      <div class="item-speed">
+        {{formatedAverageSpeed}}
+      </div>
+      <div class="item-status">
+        <a class="start act" href="#" v-show="status === 'uploading' || status === 'waiting'" @click="pause" title="暂停">
+          <i class="iconfont icon-status-start"></i>
+        </a>
+        <a class="start" href="#" v-show="status === 'paused'" @click="resume" title="开始">
+          <i class="iconfont  icon-status-start"></i>
+        </a>
+        <a style="color: #fc3f3f;" v-show="status === 'error'" @click="retry" title="重试">
+          <i class="iconfont icon-status-fail"></i>
+        </a>
+        <a style="color: #00c15c;" v-show="status === 'success'" title="上传成功">
+          <i class="iconfont icon-status-succ"></i>
+        </a>
+        <a class="delete" href="#" v-show="status != 'success'" @click="remove" title="删除">
+          <i class="iconfont icon-status-fail"></i>
+        </a>
       </div>
       <div class="progress" :style="progressStyle2"></div>
     </slot>
@@ -337,16 +347,23 @@
 </script>
 
 <style>
-  .tasks-item{width: 100%;height: 70px;padding:20px 20px;border-bottom: #eee solid 1px;position: relative;background: #fff;}
-  .tasks-item .progress{height:2px;position: absolute;bottom:-20px;background-color:rgba(0,106,223,.2);box-shadow: none; left: 0;border-radius: 0;}
+  .tasks-item{width: 100%;height: 60px;padding:15px 20px;border-bottom: #eee solid 1px;position: relative;background: #fff;}
+  .tasks-item .progress{height:59px;position: absolute;bottom:-20px;background-color:rgba(150,208,150,.1);box-shadow: none; left: 0;border-radius: 0;z-index:1;}
+  .tasks-item[status="error"] .progress{background-color: rgba(255,0,0,.1);}
   .tasks-item:last-child{border-bottom: none;}
-  .tasks-item .item-icon{width: 30px;height: 30px;position: absolute;left: 20px;}
+  .tasks-item .item-icon{width: 30px;height: 30px;position: absolute;left: 20px;z-index:2}
   .tasks-item .item-icon .icon{width: 30px;height: 30px;}
-  .tasks-item .item-info{padding-left: 40px;font-size: 12px;}
+  .tasks-item .item-info{padding-left: 40px;font-size: 12px;width:235px;float: left;z-index:2}
+  .tasks-item .item-info h6,.tasks-item .item-info p{text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
   .tasks-item .item-info p{color: #999; margin-top: 5px;}
-  .tasks-item .item-status{width: 30px;height: 30px;text-align: center;line-height: 30px;position: absolute;right: 20px;top: 20px;}
-  .tasks-item .item-status .icon-status-succ{color: #00c15c;}
-  .tasks-item .item-status .icon-status-fail{color: #fc3f3f;}
+  .tasks-item .item-status{width: 50px;height: 30px;text-align: center;line-height: 30px;position: absolute;right: 20px;top: 15px;text-align: right;z-index:2}
+  .tasks-item .item-status a{width:25px;height: 30px;display:inline-block; margin: 0 -1.5px;}
+  .tasks-item .item-status .start{color: #00c15c;}
+  .tasks-item .item-status .delete{color: #aaa;}
+  .tasks-item .item-bit,.tasks-item .item-speed{width: 80px;float: left;font-size: 12px; line-height: 30px; text-align: center; z-index:2}
+  .tasks-item .item-status .start.act{color: #006adf;}
+  .tasks-item .item-status .start.act .icon-status-start:before{content:"\e743";}
+  .tasks-item .item-status .delete:hover{color: #f00;}
   p, h6 {
     margin: 0;
     padding: 0;
