@@ -50,8 +50,8 @@
         <a class="start" href="#" v-show="status === 'paused'" @click="resume" title="开始">
           <i class="iconfont  icon-status-start"></i>
         </a>
-        <a style="color: #fc3f3f;" v-show="status === 'error'" @click="retry" title="重试">
-          <i class="iconfont icon-status-fail"></i>
+        <a class="again" href="#" v-show="status === 'error'" @click="retry" title="重试">
+          <i class="iconfont icon-status-again"></i>
         </a>
         <a style="color: #00c15c;" v-show="status === 'success'" title="上传成功">
           <i class="iconfont icon-status-succ"></i>
@@ -360,6 +360,8 @@
   .tasks-item .item-status a{width:25px;height: 30px;display:inline-block; margin: 0 -1.5px;}
   .tasks-item .item-status .start{color: #00c15c;}
   .tasks-item .item-status .delete{color: #aaa;}
+  .tasks-item .item-status .again{color: #aaa;}
+  .tasks-item .item-status .again:hover{ color: #006adf;}
   .tasks-item .item-bit,.tasks-item .item-speed{width: 80px;float: left;font-size: 12px; line-height: 30px; text-align: center; z-index:2}
   .tasks-item .item-status .start.act{color: #006adf;}
   .tasks-item .item-status .start.act .icon-status-start:before{content:"\e743";}
