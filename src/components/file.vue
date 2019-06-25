@@ -228,27 +228,26 @@
         this.file.pause()
         this._actionCheck()
         this._fileProgress()
-        console.log('-----send on file.vue pause------')
         let chunks = this.file.chunks
-        let uploadToken = this.file.uploadToken
-        let paramslist = chunks.filter((chunk, index) => {
-          if (chunk.xhr === null && chunk.loaded > 0 && chunk.preprocessState === null) {
-            return {
-              'upload_token': uploadToken,
-              'cloud_file_key_num': index
-            }
+        let uploadToken = this.file.upload_token
+        let paramslist = chunks.filter(chunk => {
+          return !chunk.xhr && chunk.loaded && !chunk.processedState
+        }).map(chunk => {
+          return {
+            'upload_token': uploadToken,
+            'cloud_file_key_num': chunk.offset
           }
         })
-        console.log(paramslist)
+        console.log(this.file.uploader.opts)
         if (paramslist.length) {
           let xhr = new XMLHttpRequest()
           xhr.open('post', 'http://222.195.70.116:8006/api/v2/file/swift/batch/delete', true)
+          xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8')
           xhr.setRequestHeader('X-auth-token', this.file.uploader.opts.headers['X-auth-token'])
           let data = {
             'paramslist': paramslist
           }
-          console.log(data)
-          xhr.send(data)
+          xhr.send(JSON.stringify(data))
         }
       },
       resume () {
