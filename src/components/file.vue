@@ -231,19 +231,35 @@
         console.log(this.file)
         this.showPaused = false
         this.file.pause()
-        let chunks = this.file.chunks
-        let uploadToken = this.file.upload_token
-        let paramslist = chunks.filter(chunk => {
-          return !chunk.xhr && chunk.loaded && !chunk.processedState
-        }).map(chunk => {
-          return {
-            'upload_token': uploadToken,
-            'cloud_file_key_num': chunk.offset
-          }
-        })
+        let paramslist
+        if (this.file.isFolder) {
+          paramslist = []
+          this.file.fileList.map(file => {
+            let uploadToken = file.upload_token
+            file.chunks.filter(chunk => {
+              return !chunk.xhr && chunk.loaded && !chunk.processedState
+            }).map(chunk => {
+              paramslist.push({
+                'upload_token': uploadToken,
+                'cloud_file_key_num': chunk.offset
+              })
+            })
+          })
+        } else {
+          let uploadToken = this.file.upload_token
+          paramslist = this.file.chunks.filter(chunk => {
+            return !chunk.xhr && chunk.loaded && !chunk.processedState
+          }).map(chunk => {
+            return {
+              'upload_token': uploadToken,
+              'cloud_file_key_num': chunk.offset
+            }
+          })
+        }
+        console.log(paramslist)
         if (paramslist.length) {
           let xhr = new XMLHttpRequest()
-          xhr.addEventListener('load', this._fileProgress, false)
+          xhr.addEventListener('loadend', this._fileProgress, false)
           xhr.open('post', this.file.uploader.opts.removeChunkLink, true)
           xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8')
           xhr.setRequestHeader('X-auth-token', this.file.uploader.opts.headers['X-auth-token'])
