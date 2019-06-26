@@ -23,10 +23,11 @@
       :type="type"
       :extension="extension"
       :file-category="fileCategory"
+      :file-icon="fileIcon"
       >
       <div class="item-icon">
         <svg aria-hidden="true" class="icon">
-          <use :xlink:href="'#icon-'+fileCategory2"></use>
+          <use :xlink:href="'#icon-'+fileIcon"></use>
         </svg>
       </div>
       <div class="item-info">
@@ -44,7 +45,7 @@
         {{formatedAverageSpeed}}
       </div>
       <div class="item-status">
-        <a class="start act" href="#" v-show="status === 'uploading' || status === 'waiting'" @click="pause" title="暂停">
+        <a class="start act" href="#" v-show="showPaused && status === 'uploading'" @click="pause" title="暂停">
           <i class="iconfont icon-status-start"></i>
         </a>
         <a class="start" href="#" v-show="status === 'paused'" @click="resume" title="开始">
@@ -60,7 +61,7 @@
           <i class="iconfont icon-status-fail"></i>
         </a>
       </div>
-      <div class="progress" :style="progressStyle2"></div>
+      <div class="progress" :style="progressStyle"></div>
     </slot>
   </div>
 </template>
@@ -94,6 +95,7 @@
     },
     data () {
       return {
+        showPaused: true,
         response: null,
         paused: false,
         error: false,
@@ -131,7 +133,7 @@
         })
         return type
       },
-      fileCategory2 () {
+      fileIcon () {
         let type = this.file.isFolder ? 'folder' : 'unknown'
         if (this.file.isFolder) {
           return 'folder'
@@ -143,7 +145,7 @@
           return 'file'
         }
       },
-      progressStyle () {
+      progressStyle2 () {
         const progress = Math.floor(this.progress * 100)
         const style = `translateX(${Math.floor(progress - 100)}%)`
         return {
@@ -154,7 +156,7 @@
           transform: style
         }
       },
-      progressStyle2 () {
+      progressStyle () {
         const progress = Math.floor(this.progress * 100)
         const style = progress + '%'
         return {
@@ -220,14 +222,15 @@
     },
     methods: {
       _actionCheck () {
+        this.showPaused = true
         this.paused = this.file.paused
         this.error = this.file.error
         this.isUploading = this.file.isUploading()
       },
       pause () {
+        console.log(this.file)
+        this.showPaused = false
         this.file.pause()
-        this._actionCheck()
-        this._fileProgress()
         let chunks = this.file.chunks
         let uploadToken = this.file.upload_token
         let paramslist = chunks.filter(chunk => {
@@ -238,10 +241,10 @@
             'cloud_file_key_num': chunk.offset
           }
         })
-        console.log(this.file.uploader.opts)
         if (paramslist.length) {
           let xhr = new XMLHttpRequest()
-          xhr.open('post', 'http://222.195.70.116:8006/api/v2/file/swift/batch/delete', true)
+          xhr.addEventListener('load', this._fileProgress, false)
+          xhr.open('post', this.file.uploader.opts.removeChunkLink, true)
           xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8')
           xhr.setRequestHeader('X-auth-token', this.file.uploader.opts.headers['X-auth-token'])
           let data = {
