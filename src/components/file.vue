@@ -95,6 +95,7 @@
     },
     data () {
       return {
+        paramslist: [],
         showPaused: true,
         response: null,
         paused: false,
@@ -227,44 +228,38 @@
         this.error = this.file.error
         this.isUploading = this.file.isUploading()
       },
+      _actionFileList (file) {
+        let that = this
+        if (file.isFolder) {
+          file.fileList.map(file => {
+            that._actionFileList(file)
+          })
+        } else {
+          let uploadToken = file.upload_token
+          file.chunks.filter(chunk => {
+            return !chunk.xhr && chunk.loaded && !chunk.processedState
+          }).map(chunk => {
+            that.paramslist.push({
+              'upload_token': uploadToken,
+              'cloud_file_key_num': chunk.offset
+            })
+          })
+        }
+      },
       pause () {
         console.log(this.file)
         this.showPaused = false
         this.file.pause()
-        let paramslist
-        if (this.file.isFolder) {
-          paramslist = []
-          this.file.fileList.map(file => {
-            let uploadToken = file.upload_token
-            file.chunks.filter(chunk => {
-              return !chunk.xhr && chunk.loaded && !chunk.processedState
-            }).map(chunk => {
-              paramslist.push({
-                'upload_token': uploadToken,
-                'cloud_file_key_num': chunk.offset
-              })
-            })
-          })
-        } else {
-          let uploadToken = this.file.upload_token
-          paramslist = this.file.chunks.filter(chunk => {
-            return !chunk.xhr && chunk.loaded && !chunk.processedState
-          }).map(chunk => {
-            return {
-              'upload_token': uploadToken,
-              'cloud_file_key_num': chunk.offset
-            }
-          })
-        }
-        console.log(paramslist)
-        if (paramslist.length) {
+        this._actionFileList(this.file)
+        console.log(this.paramslist)
+        if (this.paramslist.length) {
           let xhr = new XMLHttpRequest()
           xhr.addEventListener('loadend', this._fileProgress, false)
           xhr.open('post', this.file.uploader.opts.removeChunkLink, true)
           xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8')
           xhr.setRequestHeader('X-auth-token', this.file.uploader.opts.headers['X-auth-token'])
           let data = {
-            'paramslist': paramslist
+            'paramslist': this.paramslist
           }
           xhr.send(JSON.stringify(data))
         }
