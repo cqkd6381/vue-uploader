@@ -143,7 +143,7 @@
         if (type) {
           return type.icon
         } else {
-          return 'file'
+          return 'unknown'
         }
       },
       progressStyle2 () {
