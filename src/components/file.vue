@@ -165,7 +165,7 @@
         }
       },
       formatedAverageSpeed () {
-        return `${Uploader.utils.formatSize(this.averageSpeed)} / s`
+        return `${Uploader.utils.formatSize(this.averageSpeed)} / S`
       },
       status () {
         const isUploading = this.isUploading
