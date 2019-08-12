@@ -118,7 +118,7 @@
       fileCategory () {
         const extension = this.extension
         const isFolder = this.file.isFolder
-        let type = isFolder ? 'folder' : 'unknown'
+        let type = isFolder ? 'folder' : 'unknow'
         const categoryMap = this.file.uploader.opts.categoryMap
         const typeMap = categoryMap || {
           image: ['gif', 'jpg', 'jpeg', 'png', 'bmp', 'webp'],
@@ -135,7 +135,7 @@
         return type
       },
       fileIcon () {
-        let type = this.file.isFolder ? 'folder' : 'unknown'
+        let type = this.file.isFolder ? 'folder' : 'unknow'
         if (this.file.isFolder) {
           return 'folder'
         }
@@ -143,7 +143,7 @@
         if (type) {
           return type.icon
         } else {
-          return 'unknown'
+          return 'unknow'
         }
       },
       progressStyle2 () {
