@@ -247,6 +247,7 @@
         }
       },
       pause () {
+        this.paramslist = []
         console.log(this.file)
         this.showPaused = false
         this.file.pause()
