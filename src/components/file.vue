@@ -42,7 +42,8 @@
         {{formatedSize}}
       </div>
       <div class="item-speed">
-        {{formatedAverageSpeed}}
+        <span v-show="status !== 'uploading'">{{statusText}}</span>
+        <span v-show="status === 'uploading'">{{formatedAverageSpeed}}</span>
       </div>
       <div class="item-status">
         <a class="start act" href="#" v-show="showPaused && status === 'uploading'" @click="pause" title="暂停">
