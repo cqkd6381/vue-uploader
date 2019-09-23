@@ -139,7 +139,7 @@
         if (this.file.isFolder) {
           return 'folder'
         }
-        type = fileExts.find(item => item.ext === this.extension)
+        type = fileExts.find(item => item.ext === this.extension.toLowerCase())
         if (type) {
           return type.icon
         } else {
@@ -384,7 +384,7 @@
 
 <style>
   .tasks-item{width: 100%;height: 60px;padding:15px 20px;border-bottom: #eee solid 1px;position: relative;background: #fff;}
-  .tasks-item .progress{height:59px;position: absolute;bottom:-20px;background-color:rgba(150,208,150,.1);box-shadow: none; left: 0;border-radius: 0;z-index:1;}
+  .tasks-item .progress{height:59px;position: absolute;bottom:-20px;background-color:rgba(150,208,150,.3);box-shadow: none; left: 0;border-radius: 0;z-index:1;}
   .tasks-item[status="error"] .progress{background-color: rgba(255,0,0,.1);}
   .tasks-item:last-child{border-bottom: none;}
   .tasks-item .item-icon{width: 30px;height: 30px;position: absolute;left: 20px;z-index:2}
