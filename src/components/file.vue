@@ -46,7 +46,7 @@
         <span v-show="status === 'uploading'">{{formatedAverageSpeed}}</span>
       </div>
       <div class="item-status">
-        <a class="start act" :class="{showPaused ? 'pauseDisabled' : ''}" href="#" v-show="status === 'uploading'" @click="pause" title="暂停">
+        <a class="start act" :class="{ 'pauseDisabled': !showPaused }" href="#" v-show="status === 'uploading'" @click="pause" title="暂停">
           <i class="iconfont icon-status-start"></i>
         </a>
         <a class="start" href="#" v-show="status === 'paused'" @click="resume" title="开始">
