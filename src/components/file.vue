@@ -263,7 +263,9 @@
           let data = {
             'paramslist': this.paramslist
           }
-          xhr.send(JSON.stringify(data))
+          setTimeout(function () {
+            xhr.send(JSON.stringify(data))
+          }, 1000)
         }
       },
       resume () {
