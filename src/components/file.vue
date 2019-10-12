@@ -46,10 +46,10 @@
         <span v-show="status === 'uploading'">{{formatedAverageSpeed}}</span>
       </div>
       <div class="item-status">
-        <a class="start act" :class="{ 'pauseDisabled': !showPaused }" href="#" v-show="status === 'uploading'" @click="pause" title="暂停">
+        <a class="start act" href="#" v-show="status === 'uploading'" @click="pause" title="暂停">
           <i class="iconfont icon-status-start"></i>
         </a>
-        <a class="start" href="#" v-show="status === 'paused'" @click="resume" title="开始">
+        <a class="start" :class="{ 'pauseDisabled': !showPaused }" href="#" v-show="status === 'paused'" @click="resume" title="开始">
           <i class="iconfont  icon-status-start"></i>
         </a>
         <a class="again" href="#" v-show="status === 'error'" @click="retry" title="重试">
@@ -236,39 +236,45 @@
             that._actionFileList(file)
           })
         } else {
-          let uploadToken = file.upload_token
-          file.chunks.filter(chunk => {
-            return !chunk.xhr && chunk.loaded && !chunk.processedState
-          }).map(chunk => {
-            that.paramslist.push({
-              'upload_token': uploadToken,
-              'cloud_file_key_num': chunk.offset
+          if (file.pendedChunks.length) {
+            let uploadToken = file.upload_token
+            // console.log(uploadToken)
+            let chunks = file.pendedChunks.map(chunkOffset => {
+              return {
+                'upload_token': uploadToken,
+                'cloud_file_key_num': chunkOffset
+              }
             })
-          })
+            this.paramslist = this.paramslist.concat(chunks)
+          }
         }
       },
       pause () {
-        this.paramslist = []
-        console.log(this.file)
-        this.showPaused = false
         this.file.pause()
+        this._actionCheck()
+        this._fileProgress()
+      },
+      resume () {
+        this.showPaused = false
+        this.paramslist = []
+        // console.log(this.file)
         this._actionFileList(this.file)
-        console.log(this.paramslist)
+        // console.log(this.paramslist)
         if (this.paramslist.length) {
           let xhr = new XMLHttpRequest()
-          xhr.addEventListener('loadend', this._fileProgress, false)
+          xhr.addEventListener('loadend', this.resume2, false)
           xhr.open('post', this.file.uploader.opts.removeChunkLink, true)
           xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8')
           xhr.setRequestHeader('X-auth-token', this.file.uploader.opts.headers['X-auth-token'])
           let data = {
             'paramslist': this.paramslist
           }
-          setTimeout(function () {
-            xhr.send(JSON.stringify(data))
-          }, 1000)
+          xhr.send(JSON.stringify(data))
+        } else {
+          this.resume2()
         }
       },
-      resume () {
+      resume2 () {
         this.file.resume()
         this._actionCheck()
       },
