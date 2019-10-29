@@ -35,7 +35,7 @@
           {{file.name}}
         </h6>
         <p :title="file.father">
-          {{file.father}}
+          {{file.father ? file.father : '正在获取上传位置...'}}
         </p>
       </div>
       <div class="item-bit">
@@ -97,7 +97,7 @@
     data () {
       return {
         paramslist: [],
-        showPaused: true,
+        showPaused: false,
         response: null,
         paused: false,
         error: false,
@@ -213,6 +213,7 @@
     watch: {
       status (newStatus, oldStatus) {
         if (oldStatus && newStatus === 'uploading' && oldStatus !== 'uploading') {
+          this.showPaused = true
           this.tid = setTimeout(() => {
             this.progressingClass = 'uploader-file-progressing'
           }, 200)
@@ -257,10 +258,10 @@
       resume () {
         this.showPaused = false
         this.paramslist = []
-        // console.log(this.file)
+        console.log(this.file)
         this._actionFileList(this.file)
-        // console.log(this.paramslist)
-        if (this.paramslist.length) {
+        console.log(this.paramslist)
+        if (this.file.storage === 'openstack' && this.paramslist.length) {
           let xhr = new XMLHttpRequest()
           xhr.addEventListener('loadend', this.resume2, false)
           xhr.open('post', this.file.uploader.opts.removeChunkLink, true)
@@ -330,6 +331,9 @@
         this.error = true
         this.isComplete = false
         this.isUploading = false
+      },
+      _fileRetry (rootFile, file, message) {
+        // this._fileProgress()
       }
     },
     mounted () {
