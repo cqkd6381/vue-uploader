@@ -258,9 +258,9 @@
       resume () {
         this.showPaused = false
         this.paramslist = []
-        console.log(this.file)
+        // console.log(this.file)
         this._actionFileList(this.file)
-        console.log(this.paramslist)
+        // console.log(this.paramslist)
         if (this.file.storage === 'openstack' && this.paramslist.length) {
           let xhr = new XMLHttpRequest()
           xhr.addEventListener('loadend', this.resume2, false)
