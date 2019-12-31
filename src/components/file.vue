@@ -35,7 +35,7 @@
           {{file.name}}
         </h6>
         <p :title="file.father">
-          {{file.father ? file.father : '正在获取上传位置...'}}
+          {{file.father ? file.father : '正在获取上传地址...'}}
         </p>
       </div>
       <div class="item-bit">
