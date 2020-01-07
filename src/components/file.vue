@@ -42,7 +42,7 @@
         {{formatedSize}}
       </div>
       <div class="item-speed">
-        <span v-show="status !== 'uploading'">{{statusText}}</span>
+        <span v-show="status !== 'uploading'" :id="'unique-id-'+file.id">{{statusText}}</span>
         <span v-show="status === 'uploading'">{{formatedAverageSpeed}}</span>
       </div>
       <div class="item-status">
@@ -55,7 +55,7 @@
         <a class="again" href="#" v-show="status === 'error'" @click="retry" title="重试">
           <i class="iconfont icon-status-again"></i>
         </a>
-        <a style="color: #00c15c;" v-show="status === 'success'" title="上传成功">
+        <a style="color: #00c15c;" v-show="status === 'success'">
           <i class="iconfont icon-status-succ"></i>
         </a>
         <a class="delete" href="#" v-show="status != 'success'" @click="remove" title="删除">
@@ -411,7 +411,7 @@
   .tasks-item .item-status .delete{color: #aaa;}
   .tasks-item .item-status .again{color: #aaa;}
   .tasks-item .item-status .again:hover{ color: #006adf;}
-  .tasks-item .item-bit,.tasks-item .item-speed{width: 80px;float: left;font-size: 12px; line-height: 30px; text-align: center; z-index:2}
+  .tasks-item .item-bit,.tasks-item .item-speed{width: 90px;float: left;font-size: 12px; line-height: 30px; text-align: center; z-index:2}
   .tasks-item .item-status .start.act{color: #006adf;}
   .tasks-item .item-status .start.act .icon-status-start:before{content:"\e743";}
   .tasks-item .item-status .delete:hover{color: #f00;}
