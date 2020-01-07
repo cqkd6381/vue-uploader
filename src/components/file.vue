@@ -42,23 +42,23 @@
         {{formatedSize}}
       </div>
       <div class="item-speed">
-        <span v-show="status !== 'uploading'" :id="'unique-id-'+file.id">{{statusText}}</span>
+        <span v-show="status !== 'uploading'" :id="'unique-id1-'+file.id">{{statusText}}</span>
         <span v-show="status === 'uploading'">{{formatedAverageSpeed}}</span>
       </div>
       <div class="item-status">
-        <a class="start act" href="#" v-show="status === 'uploading'" @click="pause" title="暂停">
+        <a class="start act" v-show="status === 'uploading'" @click="pause" title="暂停">
           <i class="iconfont icon-status-start"></i>
         </a>
-        <a class="start" :class="{ 'pauseDisabled': !showPaused }" href="#" v-show="status === 'paused'" @click="resume" title="开始">
+        <a class="start" :class="{ 'pauseDisabled': !showPaused }" v-show="status === 'paused'" @click="resume" title="开始">
           <i class="iconfont  icon-status-start"></i>
         </a>
-        <a class="again" href="#" v-show="status === 'error'" @click="retry" title="重试">
+        <a class="again" v-show="status === 'error'" @click="retry" title="重试">
           <i class="iconfont icon-status-again"></i>
         </a>
         <a style="color: #00c15c;" v-show="status === 'success'">
-          <i class="iconfont icon-status-succ"></i>
+          <i class="iconfont icon-status-processing" :id="'unique-id2-'+file.id"></i>
         </a>
-        <a class="delete" href="#" v-show="status != 'success'" @click="remove" title="删除">
+        <a class="delete" v-show="status != 'success'" @click="remove" title="删除">
           <i class="iconfont icon-status-fail"></i>
         </a>
       </div>
