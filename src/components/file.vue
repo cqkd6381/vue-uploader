@@ -35,7 +35,7 @@
           {{file.name}}
         </h6>
         <p :title="file.father">
-          {{file.father ? file.father : '正在获取上传地址...'}}
+          {{file.father ? file.father : '等待中...'}}
         </p>
       </div>
       <div class="item-bit">
@@ -52,7 +52,7 @@
         <a class="start" :class="{ 'pauseDisabled': !showPaused }" v-show="status === 'paused'" @click="resume" title="开始">
           <i class="iconfont  icon-status-start"></i>
         </a>
-        <a class="again" v-show="status === 'error'" @click="retry" title="重试">
+        <a class="again" v-show="status === 'error'" @click="retry" title="重试" :id="'unique-id3-'+file.id">
           <i class="iconfont icon-status-again"></i>
         </a>
         <a style="color: #00c15c;" v-show="status === 'success'">
