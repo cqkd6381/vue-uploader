@@ -1,6 +1,6 @@
 {
   "name": "vue-cqkd-upload",
-  "version": "0.12.39",
+  "version": "0.12.43",
   "description": "A Vue.js upload component powered by simple-uploader.js",
   "main": "dist/vue-uploader.js",
   "repository": {
@@ -18,7 +18,7 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs"
   },
   "dependencies": {
-    "cqkd-upload.js": "^0.7.16"
+    "cqkd-upload.js": "^0.7.21"
   },
   "peerDependencies": {
     "vue": ">=2.2"
