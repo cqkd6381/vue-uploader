@@ -163,10 +163,10 @@
     outline: none;
   }
   @media (min-width: 768px) {
-    .tasks{width: 500px;position: fixed;right: 20px;bottom: 20px;box-shadow: rgba(0,0,0,.1) 0 2px 10px;}
+    .tasks{width: 500px;box-shadow: rgba(0,0,0,.1) 0 2px 10px;}
   }
   @media (max-width: 768px) {
-    .tasks{width:calc(100% - 20px);position: fixed;left: 10px; right: 10px;bottom: 10px;box-shadow: 0 3px 9px rgba(0,0,0,.2);}
+    .tasks{width:calc(100% - 20px);box-shadow: 0 3px 9px rgba(0,0,0,.2);}
   }
   .tasks-header{width: 100%;height: 50px; padding:10px 20px;background: #fff;background: #f1f1f1;line-height: 30px;}
   .tasks-header .title{font-size: 18px;float: left;}
