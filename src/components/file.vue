@@ -46,20 +46,25 @@
         <span v-show="status === 'uploading'">{{formatedAverageSpeed}}</span>
       </div>
       <div class="item-status">
-        <a class="start act" v-show="status === 'uploading'" @click="pause" title="暂停">
+        <a class="start act" v-show="!file.isCalcHash && status === 'uploading'" @click="pause" title="暂停">
           <i class="iconfont icon-status-start"></i>
         </a>
-        <a class="start" :class="{ 'pauseDisabled': !showPaused }" v-show="status === 'paused'" @click="resume" title="开始">
+        <a class="start" :class="{ 'pauseDisabled': !showPaused }" v-show="!file.isCalcHash && status === 'paused'"
+          @click="resume" title="开始">
           <i class="iconfont  icon-status-start"></i>
         </a>
-        <a class="again" v-show="status === 'error'" @click="retry" title="重试" :id="'unique-id3-'+file.id">
+        <a class="again" v-show="!file.isCalcHash && status === 'error'" @click="retry" title="重试"
+          :id="'unique-id3-' + file.id">
           <i class="iconfont icon-status-again"></i>
         </a>
-        <a style="color: #00c15c;" v-show="status === 'success'">
-          <i class="iconfont icon-status-processing" :id="'unique-id2-'+file.id"></i>
+        <a style="color: #00c15c;" v-show="!file.isCalcHash && status === 'success'">
+          <i class="iconfont icon-status-processing" :id="'unique-id2-' + file.id"></i>
         </a>
-        <a class="delete" v-show="status != 'success'" @click="remove" title="删除">
+        <a class="delete" v-show="!file.isCalcHash && status != 'success'" @click="remove" title="删除">
           <i class="iconfont icon-status-fail"></i>
+        </a>
+        <a class="calc" v-show="file.isCalcHash" @click="remove" title="正在计算文件哈希...">
+          <i class="iconfont icon-status-processing"></i>
         </a>
       </div>
       <div class="progress" :style="progressStyle"></div>
@@ -414,6 +419,8 @@
   .tasks-item .item-bit,.tasks-item .item-speed{width: 90px;float: left;font-size: 12px; line-height: 30px; text-align: center; z-index:2}
   .tasks-item .item-status .start.act{color: #006adf;}
   .tasks-item .item-status .start.act .icon-status-start:before{content:"\e743";}
+  .tasks-item .item-status .calc.act{color: #f0ad4e;}
+  .tasks-item .item-status .calc.act .icon-status-processing:before{content:"\e77f";}
   .tasks-item .item-status .delete:hover{color: #f00;}
   p, h6 {
     margin: 0;
