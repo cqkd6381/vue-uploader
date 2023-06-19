@@ -35,7 +35,7 @@
           {{file.name}}
         </h6>
         <p :title="file.father">
-          {{file.father ? file.father : '等待中...'}}
+          {{file.father ? file.father : '正在计算文件大小...'}}
         </p>
       </div>
       <div class="item-bit">
@@ -46,24 +46,24 @@
         <span v-show="status === 'uploading'">{{formatedAverageSpeed}}</span>
       </div>
       <div class="item-status">
-        <a class="start act" v-show="!file.isCalcHash && status === 'uploading'" @click="pause" title="暂停">
+        <a class="start act" v-show="file.isCalcHash === false && status === 'uploading'" @click="pause" title="暂停">
           <i class="iconfont icon-status-start"></i>
         </a>
-        <a class="start" :class="{ 'pauseDisabled': !showPaused }" v-show="!file.isCalcHash && status === 'paused'"
+        <a class="start" :class="{ 'pauseDisabled': !showPaused }" v-show="file.isCalcHash === false && status === 'paused'"
           @click="resume" title="开始">
           <i class="iconfont  icon-status-start"></i>
         </a>
-        <a class="again" v-show="!file.isCalcHash && status === 'error'" @click="retry" title="重试"
+        <a class="again" v-show="file.isCalcHash === false && status === 'error'" @click="retry" title="重试"
           :id="'unique-id3-' + file.id">
           <i class="iconfont icon-status-again"></i>
         </a>
-        <a style="color: #00c15c;" v-show="!file.isCalcHash && status === 'success'">
+        <a style="color: #00c15c;" v-show="file.isCalcHash === false && status === 'success'">
           <i class="iconfont icon-status-processing" :id="'unique-id2-' + file.id"></i>
         </a>
-        <a class="delete" v-show="!file.isCalcHash && status != 'success'" @click="remove" title="删除">
+        <a class="delete" v-show="file.isCalcHash === false && status != 'success'" @click="remove" title="删除">
           <i class="iconfont icon-status-fail"></i>
         </a>
-        <a class="calc" v-show="file.isCalcHash" @click="remove" title="正在计算文件哈希...">
+        <a class="calc" v-show="(!file.isCalcHash && file.isCalcHash !== false) || file.isCalcHash === true" title="正在计算文件大小...">
           <i class="iconfont icon-status-processing"></i>
         </a>
       </div>
