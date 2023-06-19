@@ -63,7 +63,7 @@
         <a class="delete" v-show="isCalcHash === false && status != 'success'" @click="remove" title="删除">
           <i class="iconfont icon-status-fail"></i>
         </a>
-        <a class="calc" v-show="(!isCalcHash && isCalcHash !== false) || isCalcHash === true" title="正在计算文件大小...">
+        <a class="calc" v-show="(!isCalcHash && isCalcHash !== false) || isCalcHash === true" title="正在计算文件大小..." :id="'unique-id4-' + file.id">
           <i class="iconfont icon-status-processing"></i>
         </a>
       </div>
